@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<style>
+
+.container {
+	margin: 0 auto;
+	max-width: 600px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.container > * {
+	margin-bottom: 15px;
+}
+
+.output {
+	display: inline-block;
+	padding: 10px 15px;
+	border: 2px solid #000;
+	border-radius: 10px;
+	letter-spacing: 4px;
+}
+button {
+	height: 30px;
+	line-height: 30px;
+	width: 60px;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	background-color: #ddd;
+}
+button:hover {
+	background-color: #ccc;
+}
+
+	</style>
+</head>
+<body>
+	
+	<div class="container">
+		<div class="inform"></div>
+		<input class="in-letter" type="text">
+		<button class="push-letter">push</button>
+		<div class="output"></div>
+		<button class="exit">exit</button>
+		<button class="restart">restart</button>
+	</div>
+
+<script>
+
+"use strict";
+
+let user = {
+	userName: '',
+
+	getUserName: function () {
+		this.userName = prompt('Как вас зовут?', '');
+	},
+
+	sayHelloToUser: function () {
+		for (let i = 0; i < 1; i++) {
+			if (this.userName !== '' && this.userName !== null) {
+				alert(`Привет, ${this.userName}, мы начинаем игру`);
+			} else if (this.userName === '' || this.userName === null) {
+				this.getUserName();
+				i--;
+			}
+		}
+	},
+};
+
+
+const button = document.querySelector('.push-letter'),
+	exit = document.querySelector('.exit'),
+	input = document.querySelector('.in-letter'),
+	restart = document.querySelector('.restart');
+
+let letter = '';
+
+let game = {
+	randomWords: ['рука', 'земля', 'поворот', 'катана', 'угол', 'андроид', 'компьютер', 'самолет', 'телефон', 'катамаран', 'кровля', 'ситуация'],
+	div: document.querySelector('.output'),
+	inform: document.querySelector('.inform'),
+	randomWord: '',
+	strToArr: [],
+	startInput: [],
+	// selection one random word
+	getRandomWord: function () {
+		this.randomWord = this.randomWords[Math.floor(Math.random() * this.randomWords.length)];
+		console.log(this.randomWord);
+
+		this.inform.innerHTML = 'Вводите в поле по 1 букве';
+	},
+	
+	getStartGaps: function () {
+		// separation the string
+		this.strToArr = this.randomWord.split('');
+
+		// add gaps to output
+		for (let i = 0; i < this.strToArr.length; i++) {
+			this.startInput.unshift('_');
+		}
+
+		this.div.innerHTML = this.startInput;
+	},
+	// func to check and add some letter on click
+	getSomeLetter: function () {
+		letter = input.value;
+
+		// check if there is only one letter
+		if (letter[1] !== undefined) {
+			alert('Введите только 1 букву');
+			letter = '';
+		} else if (letter[1] === undefined) {
+			letter = input.value;
+		}
+		
+		// if it`s right, add letter to gaps
+
+		for (let i = 0; i < this.startInput.length; i++) {
+			if (this.strToArr[i] === letter) {
+				this.startInput[i] = this.strToArr[i];
+				this.div.innerHTML = this.startInput;
+			}
+			input.focus();
+		}
+
+		// if this is the end, show congratulations
+		for (let j = 0; j < this.startInput.length; j++) {
+			for (let k = 0; k < this.startInput.length; k++) {
+				if(this.startInput.includes('_') === false) {
+					this.div.innerHTML = `Поздравляю, Вы победили! - слово ${this.startInput.join('').toUpperCase()}`;
+					this.inform.innerHTML = `(づ｡◕‿‿◕｡)づ`;
+				}
+			}
+		}		
+		input.value = '';
+	},
+	restartTheGame: function () {
+		
+	},
+	exitGame: function () {
+		this.div.innerHTML = `Было загадано слово - ${this.strToArr.join('').toUpperCase()}`;
+		this.inform.innerHTML = `(づ｡◕‿‿◕｡)づ`;
+		console.log(game.startInput);
+		
+		alert('Вы покинули игру');
+	},
+}
+
+button.addEventListener('click', () => game.getSomeLetter());
+
+exit.addEventListener('click', () => game.exitGame());
+restart.addEventListener('click', () => game.restartTheGame());
+
+
+game.getRandomWord();
+
+user.getUserName();
+user.sayHelloToUser();
+
+game.getStartGaps();
+
+
+</script>
+</body>
+</html>
